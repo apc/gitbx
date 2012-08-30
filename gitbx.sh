@@ -3,11 +3,15 @@
 # 
 # TODO: 
 # 1. write usage
-# 2. allow user to specify which branch to push.
+# 2. allow user to specify which branch to push. 
+# 	(Need an option to set a custom value for myBranch)
 # 3. The -l option might conflict with -p. Need to go through this and find
 # a less cumbersome solution.
 
-choice=docs #default directory for dropbox repositories. The flag -p sets $choice to 'packages'.
+
+choice=docs #default subdirectory for dropbox repositories. The flag -p sets $choice to 'packages'.
+myGitbox=Dropbox/Git
+myBranch=master
 
 # Get argument for naming remote repo before flags. This will look for arguments after `gitbx` before the firt flag.
 n=1
@@ -36,7 +40,7 @@ done
 # Check if there already is a remote named 'dropbox'
 if [ -d ".git/refs/remotes/dropbox" ]; then 
 	echo "Gitbx: Error: You already have a remote repository in your Dropbox folder."; 
-	exit
+	exit;
 else 
 	if [ -d .git ]; then #Check to see that this is a git repository.
 		if [ -z "$arg_1" ]; then #Prompt for name of remote repo if not initially specified.
@@ -67,12 +71,12 @@ else
 			fi;
 		fi;
 		# Create bare repository in dropbox. 
-		cd ~/dropbox/git/$choice/ && git init --bare --quiet $remotebox.git && cd - &>/dev/null 
+		cd ~/$myGitbox/$choice/ && git init --bare --quiet $remotebox.git && cd - &>/dev/null 
 		# Point the alias 'dropbox' to that remote.
-		git remote add dropbox ~/dropbox/git/$choice/$remotebox.git
-		# Push master branch.
-		git push -u --quiet dropbox master
-		echo "Gitbx: Initialized a bare repository at ~/Dropbox/Git/$choice/$remotebox.git."	
+		git remote add dropbox ~/$myGitbox/$choice/$remotebox.git
+		# Push myBranch branch.
+		git push -u --quiet dropbox $myBranch
+		echo "Gitbx: Initialized a bare repository at ~/$myGitbox/$choice/$remotebox.git."	
 	else
 		echo "Gitbx: Error: You need to set up a local repository first. If this is a TeX directory, try using gittex.";
 	fi;
