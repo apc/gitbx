@@ -1,7 +1,11 @@
 #!/bin/sh
-#TODO: 
-#1. write usage
-#2. allow user to specify which branch to push.
+# 
+# 
+# TODO: 
+# 1. write usage
+# 2. allow user to specify which branch to push.
+# 3. The -l option might conflict with -p. Need to go through this and find
+# a less cumbersome solution.
 
 choice=docs #default directory for dropbox repositories. The flag -p sets $choice to 'packages'.
 
@@ -16,14 +20,17 @@ do
   shift
 done
 
-#Define flags. -n allows to specift the name for the remote repo.
-while getopts "pn:" OPTION 
+#Define flags. -n allows to specify the name for the remote repo. 
+# -l allows to specify a location within ~/dropbox/git
+while getopts "pn:l:" OPTION 
 do
 	case $OPTION in
 		p) 
 			choice=packages;;
 		n) 
 			arg_1=$OPTARG ;;
+		l)
+			choice=$OPTARG ;;
 	esac
 done
 # Check if there already is a remote named 'dropbox'
@@ -65,7 +72,7 @@ else
 		git remote add dropbox ~/dropbox/git/$choice/$remotebox.git
 		# Push master branch.
 		git push -u --quiet dropbox master
-		echo "Initialized a bare repository at ~/Dropbox/Git/$choice/$remotebox.git."	
+		echo "Gitbx: Initialized a bare repository at ~/Dropbox/Git/$choice/$remotebox.git."	
 	else
 		echo "Gitbx: Error: You need to set up a local repository first. If this is a TeX directory, try using gittex.";
 	fi;
