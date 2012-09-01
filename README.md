@@ -10,9 +10,17 @@ From within your working local git repository, simply type
 
 and follow the instructions. `gitbx` will create a bare repository inside your dropbox folder, and creates a remote named `dropbox`. Currently it will also push your `master` branch of your local repository. 
 
+You can also type
+
+    gitbx <remote> <location> <branch>
+
+to create a repository named `<remote>.git` inside `~/Dropbox/Git/<location>`. This command will push `<branch>` to the `dropbox` remote.
+
 #Customization
 
-By default, `gitbx` assumes that you keep your bare repositories inside `~/Dropbox/Git/`. You can change that by setting the variable `myGitbx` to the desired value. It also allows you to sort your bare repositories inside subdirectories. By default, bare repositories will be created in `~/Dropbox/Git/docs/`. Again, you can change that by setting `mySubdir` to the desired value. 
+By default, `gitbx` assumes that you keep your bare repositories inside `~/Dropbox/Git/`. You can change that by setting the variable `myGitbx` to the desired value. 
+
+It also allows you to sort your bare repositories inside subdirectories. By default, bare repositories will be created in `~/Dropbox/Git/docs/`. Again, you can change that by setting `mySubdir` to the desired value. 
 
 #Options
 

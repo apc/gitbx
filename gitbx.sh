@@ -6,7 +6,7 @@
 # a less cumbersome solution.
 # 2. Test to see whether Dropbox is installed needs to be improved.
 # 3. Allow user to push changes using gitbx directly.
-# 4. Update README
+# 4. README could be improved.
 # 
 
 # Main variables
