@@ -1,5 +1,8 @@
 #!/bin/sh
 # 
+# gitbx: A simple script for using Dropbox for private repositories.
+# ==================================================================
+# A.P.C.
 # 
 # TODO: 
 # 1. The -l option might conflict with -p. Need to go through this and find
@@ -7,7 +10,9 @@
 # 2. Test to see whether Dropbox is installed needs to be improved.
 # 3. Allow user to push changes using gitbx directly.
 # 4. README could be improved.
-# 
+# 5. Write man.
+# 6. Create option for moving the dropbox repository.
+# 7. Allow user not to use subdir at all and go straight to myGitbx.
 
 # Main variables
 mySubdir=docs #default subdirectory for dropbox repositories. The flag -p sets $mySubdir to 'packages'.
@@ -29,6 +34,8 @@ do
   shift
 done
 
+# Set variables to values given in arguments before option flags.
+
 myName=$arg_1
 
 if [ -z "$arg_2" ]; then
@@ -43,8 +50,13 @@ else
 	myBranch=$arg_3;
 fi;
 
-#Define flags. -n allows to specify the name for the remote repo. 
-# -l allows to specify a location within myGitbx
+#Define flags. 
+# -n allows to specify the name for the remote repo. 
+# -l allows to specify a location within myGitbx. 
+# -b allows to specify a branch to push to remote.
+# -p uses mySubdir2 to specify location for the remote repo.
+# If the value for the corresponding variables has been already set as argument
+# of gibx, this will yield an error message.
 while getopts "pn:l:b:" OPTION 
 do
 	case $OPTION in
@@ -87,10 +99,10 @@ done
 if [ -d ~/Dropbox ]; then
 	continue;
 else
-	echo "Gitbx: Error: It appears that you have not yet installed Dropbox in your system. Please verify that Dropbox is installed, and modify gitbx.sh to specify the location of your Dropbox folder.";
+	echo "Gitbx: Error: It appears that you have not yet installed Dropbox in your system. \n Please verify that Dropbox is installed, and modify gitbx.sh to specify the location of your Dropbox folder.";
 fi;
 
-# Check if myGitbx exists. Give user the option to create it.
+# Check if myGitbx exists. Give user the option to create it if not.
 if [ -d "$myGitbx" ]; then
 	continue;
 else
@@ -115,8 +127,11 @@ if [ -d ".git/refs/remotes/dropbox" ]; then
 	echo "Gitbx: Error: You already have a remote repository in your Dropbox folder. Good bye."; 
 	exit;
 else 
-	if [ -d .git ]; then #Check to see that this is a git repository.
-		if [ -z "$myName" ]; then #Prompt for name of remote repo if not initially specified.
+	# Check to see that this is a git repository. 
+	# Gives an error message if it is not.
+	if [ -d .git ]; then 
+		# Prompt for name of remote repo if not initially specified.
+		if [ -z "$myName" ]; then 
 			echo "What would you like to name the dropbox remote?"
 			read myName;
 		else
@@ -143,7 +158,11 @@ else
 				fi;
 			fi;
 		fi;
+
 		# Create bare repository in dropbox. 
+		# 
+		# First check whether mySubdir exists.
+		# Give user the option to create it if it doesn't.
 		if [ -d $myGitbx/$mySubdir ]; then
 			continue
 		else
@@ -161,11 +180,14 @@ else
 				fi;
 			fi;
 		fi;
+
+		# Create bare repository in myGitbx/mySubdir
 		cd $myGitbx/$mySubdir/ && git init --bare --quiet $myName.git && cd - &>/dev/null 
 
 		# Point the alias 'dropbox' to that remote.
 		git remote add dropbox $myGitbx/$mySubdir/$myName.git
-		# Push myBranch branch.
+
+		# Push myBranch.
 		git push -u --quiet dropbox $myBranch
 		echo "Gitbx: Initialized a bare repository at $myGitbx/$mySubdir/$myName.git."	
 	else
